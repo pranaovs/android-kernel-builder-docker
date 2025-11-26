@@ -92,14 +92,13 @@ echo "Compiling $(git -C "$KDIR" branch --show-current) kernel for $DEFCONFIG"
 mkdir -p "$KDIR/out"
 
 echo "Configuring kernel with $DEFCONFIG and additional args: $KERNEL_CONFIG_ARGS"
-make \
+make -f "$KDIR"/Makefile \
   O="$KDIR/out" \
   ARCH="$ARCH" \
-  "$KERNEL_CONFIG_ARGS" \
   "$DEFCONFIG"
 
 echo "Running additional configuration with extra args: $KERNEL_ADDITIONAL_CONFIG_ARGS"
-make \
+make -f "$KDIR"/Makefile \
   O="$KDIR/out" \
   CC=clang \
   LD="${LLVM_BIN}/ld.lld" \
@@ -116,11 +115,11 @@ make \
   LLVM_DIS="${LLVM_BIN}/llvm-dis" \
   LLVM_NM="${LLVM_BIN}/llvm-nm" \
   LLVM=1 \
-  "$KERNEL_ADDITIONAL_CONFIG_ARGS" \
-  "$DEFCONFIG"
+  "$DEFCONFIG" \
+  moto.config
 
 echo "Starting kernel build with args: $KERNEL_BUILD_ARGS"
-make \
+make -f "$KDIR"/Makefile \
   -j"$(nproc --all)" \
   O="$KDIR/out" \
   CC=clang \
@@ -137,5 +136,4 @@ make \
   LLVM_AR="${LLVM_BIN}/llvm-ar" \
   LLVM_DIS="${LLVM_BIN}/llvm-dis" \
   LLVM_NM="${LLVM_BIN}/llvm-nm" \
-  LLVM=1 \
-  "$KERNEL_BUILD_ARGS"
+  LLVM=1
