@@ -17,6 +17,7 @@ KERNEL_DIR="/kernel"
 : "${KERNEL_SOURCE_GIT_BRANCH:=}"
 : "${KERNEL_CONFIG_ARGS:=}"
 : "${KERNEL_ADDITIONAL_CONFIG_ARGS:=}"
+: "${KERNEL_ADDITIONAL_CONFIG_FILES:=}"
 : "${KERNEL_BUILD_ARGS:=}"
 
 # Check required variables
@@ -95,8 +96,9 @@ echo "Configuring kernel with $DEFCONFIG and additional args: $KERNEL_CONFIG_ARG
 make \
   O="$KDIR/out" \
   ARCH="$ARCH" \
-  "$KERNEL_CONFIG_ARGS" \
-  "$DEFCONFIG"
+  ${KERNEL_CONFIG_ARGS:+$KERNEL_CONFIG_ARGS} \
+  "$DEFCONFIG" \
+  ${KERNEL_CONFIG_FILES:+$KERNEL_CONFIG_FILES}
 
 echo "Running additional configuration with extra args: $KERNEL_ADDITIONAL_CONFIG_ARGS"
 make \
@@ -116,8 +118,9 @@ make \
   LLVM_DIS="${LLVM_BIN}/llvm-dis" \
   LLVM_NM="${LLVM_BIN}/llvm-nm" \
   LLVM=1 \
-  "$KERNEL_ADDITIONAL_CONFIG_ARGS" \
-  "$DEFCONFIG"
+  ${KERNEL_ADDITIONAL_CONFIG_ARGS:+$KERNEL_ADDITIONAL_CONFIG_ARGS} \
+  "$DEFCONFIG" \
+  ${KERNEL_ADDITIONAL_CONFIG_FILES:+$KERNEL_ADDITIONAL_CONFIG_FILES}
 
 echo "Starting kernel build with args: $KERNEL_BUILD_ARGS"
 make \
@@ -138,4 +141,5 @@ make \
   LLVM_DIS="${LLVM_BIN}/llvm-dis" \
   LLVM_NM="${LLVM_BIN}/llvm-nm" \
   LLVM=1 \
-  "$KERNEL_BUILD_ARGS"
+  ${KERNEL_BUILD_ARGS:+$KERNEL_BUILD_ARGS} \
+  ${KERNEL_BUILD_FILES:+$KERNEL_BUILD_FILES}
