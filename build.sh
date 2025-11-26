@@ -9,16 +9,21 @@ KERNEL_DIR="/kernel"
 : "${KBUILD_BUILD_USER:=$(whoami)}"
 : "${KBUILD_BUILD_HOST:=$(hostname)}"
 : "${LLVM:=1}"
+: "${TOOLCHAIN_CLANG:=}"
 : "${TOOLCHAIN_CLANG_GIT_BRANCH:=}"
+: "${TOOLCHAIN_CLANG_GIT:=}"
+: "${KERNEL_SOURCE:=}"
+: "${KERNEL_SOURCE_GIT:=}"
 : "${KERNEL_SOURCE_GIT_BRANCH:=}"
 : "${KERNEL_CONFIG_ARGS:=}"
 : "${KERNEL_ADDITIONAL_CONFIG_ARGS:=}"
 : "${KERNEL_BUILD_ARGS:=}"
 
+# Check required variables
 required_vars=("DEFCONFIG")
 
 for var in "${required_vars[@]}"; do
-  if [ -z "${!var}" ]; then
+  if [ -z "${!var+x}" ]; then
     echo "Error: $var environment variable is not set" >&2
     exit 1
   fi
